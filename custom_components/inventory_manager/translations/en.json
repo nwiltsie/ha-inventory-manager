@@ -68,7 +68,7 @@
     },
     "binary_sensor": {
       "problem_entity": {
-        "name": "Soon empty"
+        "name": "Almost empty"
       }
     },
     "sensor": {
