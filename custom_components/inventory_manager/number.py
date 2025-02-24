@@ -45,7 +45,7 @@ async def async_setup_entry(
     # Get the item object
     item: InventoryManagerItem = hass.data[DOMAIN][config_entry.entry_id]
 
-    _LOGGER.debug("Calling number.async_setup_entry for %s", config_entry)
+    _LOGGER.debug("Calling number.async_setup_entry for %s", config_entry.data)
 
     # Create numeric entities
     entities = [

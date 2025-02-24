@@ -40,7 +40,7 @@ class WarnSensor(BinarySensorEntity):
     def __init__(self, hass: core.HomeAssistant, item: InventoryManagerItem):
         """Create a new object."""
         super().__init__()
-        _LOGGER.debug("Initializing WarnSensor")
+        _LOGGER.debug("Initializing WarnSensor for %s", item.name)
         self.hass = hass
         self.item: InventoryManagerItem = item
         self.item.entity[InventoryManagerEntityType.WARNING] = self

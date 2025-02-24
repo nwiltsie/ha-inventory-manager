@@ -45,7 +45,7 @@ async def async_setup_entry(
 ) -> bool:
     """Set up platform from a ConfigEntry."""
     hass.data.setdefault(DOMAIN, {})
-    _LOGGER.debug("Calling async_setup_entry for %s", entry)
+    _LOGGER.debug("Calling async_setup_entry for %s (%s)", entry.entry_id, entry.data)
 
     item = InventoryManagerItem(hass, entry.data)
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = item
@@ -93,6 +93,8 @@ class InventoryManagerItem:
             entity_type: self._generate_entity_config(entity_type)
             for entity_type in InventoryManagerEntityType
         }
+        _LOGGER.debug("The full entity config is %s", self.entity_config)
+
 
     def _generate_entity_config(self, entity_type: InventoryManagerEntityType) -> dict:
         if entity_type == InventoryManagerEntityType.EMPTYPREDICTION:
@@ -146,7 +148,7 @@ class InventoryManagerItem:
             if et in self.entity and self.entity[et] is not None:
                 self.entity[et].update()
             else:
-                _LOGGER.debug("%s cannot be updated yet", et)
+                _LOGGER.debug("%s cannot be updated yet", et.name)
 
     def get(self, entity_type: InventoryManagerEntityType) -> float:
         """Get number."""
@@ -158,8 +160,8 @@ class InventoryManagerItem:
         daily = self.daily_consumption()
         if daily > 0:
             return supply / daily
-        else:
-            return 10000
+
+        return 10000
 
     def daily_consumption(self) -> float:
         """Calculate the daily consumption."""
