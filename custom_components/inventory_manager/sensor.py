@@ -75,7 +75,7 @@ class EmptyPredictionSensor(SensorEntity):
         _LOGGER.debug("Updating sensor")
 
         self.extra_state_attributes[ATTR_DAYS_REMAINING] = self.item.days_remaining()
-        self.native_value = now() + timedelta(days=self.item.days_remaining())
+        self.native_value = now() + timedelta(hours=self.item.days_remaining())
         _LOGGER.debug(
             "Setting native value of %s to %s", self.entity_id, self.native_value
         )
