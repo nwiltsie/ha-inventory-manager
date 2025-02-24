@@ -104,9 +104,9 @@ class InventoryManagerItem:
         else:
             fmt = "number.{}"
 
-        _LOGGER.debug("Calling InventoryManagerItem._generate_entity_config for %s", entity_type)
-
         unique_id = self.device_id + UNDERSCORE + entity_type.name.lower()
+
+        _LOGGER.debug("Calling InventoryManagerItem._generate_entity_config for %s (id: %s, fmt: %s)", entity_type, unique_id, fmt)
         return {
             UNIQUE_ID: unique_id,
             ENTITY_ID: generate_entity_id(fmt, unique_id, hass=self._hass),
@@ -141,14 +141,16 @@ class InventoryManagerItem:
         else:
             self._numbers[spec] = val
 
+        _LOGGER.debug("IMI.set(%s = %0.2f)", spec.name, val)
+
         for et in [
             InventoryManagerEntityType.EMPTYPREDICTION,
             InventoryManagerEntityType.WARNING,
         ]:
-            if et in self.entity and self.entity[et] is not None:
-                self.entity[et].update()
+            if (sub_entity := self.entity.get(et)) is not None:
+                sub_entity.update()
             else:
-                _LOGGER.debug("%s cannot be updated yet", et.name)
+                _LOGGER.debug("%s does not exist to be updated", et.name)
 
     def get(self, entity_type: InventoryManagerEntityType) -> float:
         """Get number."""

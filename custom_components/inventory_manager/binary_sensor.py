@@ -63,7 +63,7 @@ class WarnSensor(BinarySensorEntity):
         self.entity_id = item.entity_config[InventoryManagerEntityType.WARNING][
             ENTITY_ID
         ]
-        _LOGGER.debug("WarnSensor - %s has ID %s", item.name, self.entity_id)
+        _LOGGER.debug("WarnSensor - %s has ID `%s` `%s`", item.name, self.unique_id, self.entity_id)
 
     def update(self):
         """Update the state of the entity."""
