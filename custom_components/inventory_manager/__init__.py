@@ -45,6 +45,7 @@ async def async_setup_entry(
 ) -> bool:
     """Set up platform from a ConfigEntry."""
     hass.data.setdefault(DOMAIN, {})
+    _LOGGER.debug("Calling async_setup_entry for %s", entry)
 
     item = InventoryManagerItem(hass, entry.data)
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = item
@@ -75,6 +76,8 @@ class InventoryManagerItem:
         self.data = d
         self._numbers = {}
 
+        _LOGGER.debug("Calling InventoryManagerItem.__init__ for %s", d)
+
         self.device_id = d[CONF_ITEM_NAME].lower()
         if CONF_ITEM_SIZE in d:
             self.device_id = self.device_id + "-" + d[CONF_ITEM_SIZE].lower()
@@ -98,6 +101,8 @@ class InventoryManagerItem:
             fmt = "binary_sensor.{}"
         else:
             fmt = "number.{}"
+
+        _LOGGER.debug("Calling InventoryManagerItem._generate_entity_config for %s", entity_type)
 
         unique_id = self.device_id + UNDERSCORE + entity_type.name.lower()
         return {

@@ -45,6 +45,8 @@ async def async_setup_entry(
     # Get the item object
     item: InventoryManagerItem = hass.data[DOMAIN][config_entry.entry_id]
 
+    _LOGGER.debug("Calling number.async_setup_entry for %s", config_entry)
+
     # Create numeric entities
     entities = [
         SupplyEntity(hass, item),
@@ -89,6 +91,9 @@ class InventoryNumber(RestoreNumber, metaclass=ABCMeta):
     ) -> None:
         """Create a new number entity."""
         super().__init__()
+
+        _LOGGER.debug("Calling InventoryNumber.__init__ for %s %s", item, entity_type)
+
         self.hass: core.HomeAssistant = hass
         self.item: InventoryManagerItem = item
         self.device_info: DeviceInfo = item.device_info
