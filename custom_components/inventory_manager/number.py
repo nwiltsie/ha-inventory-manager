@@ -100,6 +100,7 @@ class InventoryNumber(RestoreNumber, metaclass=ABCMeta):
         self.entity_type: InventoryManagerEntityType = entity_type
 
         # register self with the item object
+        _LOGGER.debug("InventoryNumber - setting %s for %s", entity_type.name, item.name)
         self.item.entity[entity_type] = self
 
         entity_config: dict = item.entity_config[entity_type]
@@ -174,7 +175,7 @@ class SupplyEntity(InventoryNumber):
 
     def __init__(self, hass: core.HomeAssistant, pill) -> None:
         """Create a new suppy entity."""
-        _LOGGER.debug("Initializing SupplyEntity")
+        _LOGGER.debug("Initializing SupplyEntity for %s", pill.name)
         super().__init__(hass, pill, InventoryManagerEntityType.SUPPLY)
         self.native_max_value = 1000000
         self.icon = "mdi:medication"

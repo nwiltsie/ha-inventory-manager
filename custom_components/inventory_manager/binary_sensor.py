@@ -27,6 +27,7 @@ async def async_setup_entry(
     async_add_entities,
 ):
     """Set up sensors from a config entry created in the integrations UI."""
+    _LOGGER.debug("binary_sensor.async_setup_entry %s", config_entry.data)
     config = hass.data[DOMAIN][config_entry.entry_id]
     sensors = [WarnSensor(hass, config)]
     async_add_entities(sensors, update_before_add=True)
@@ -43,6 +44,7 @@ class WarnSensor(BinarySensorEntity):
         _LOGGER.debug("Initializing WarnSensor for %s", item.name)
         self.hass = hass
         self.item: InventoryManagerItem = item
+        _LOGGER.debug("WarnSensor - setting WARNING for %s", item.name)
         self.item.entity[InventoryManagerEntityType.WARNING] = self
         self.platform = entity_platform.async_get_current_platform()
 
@@ -61,10 +63,11 @@ class WarnSensor(BinarySensorEntity):
         self.entity_id = item.entity_config[InventoryManagerEntityType.WARNING][
             ENTITY_ID
         ]
+        _LOGGER.debug("WarnSensor - %s has ID %s", item.name, self.entity_id)
 
     def update(self):
         """Update the state of the entity."""
-        _LOGGER.debug("Updating binary sensor")
+        _LOGGER.debug("Updating binary sensor for %s", self.device_id)
 
         days_remaining = self.item.days_remaining()
         if days_remaining == STATE_UNAVAILABLE:
