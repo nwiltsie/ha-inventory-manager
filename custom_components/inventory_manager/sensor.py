@@ -32,7 +32,19 @@ async def async_setup_entry(
     """Set up sensors from a config entry created in the integrations UI."""
 
     config = hass.data[DOMAIN][config_entry.entry_id]
-    sensors = [EmptyPredictionSensor(hass, config)]
+
+    entity_id = config.entity_config[InventoryManagerEntityType.EMPTYPREDICTION][
+        ENTITY_ID
+    ]
+
+    # Prevent duplicates by checking existing entities
+    existing_entities = [entity.entity_id for entity in hass.states.async_all()]
+
+    if entity_id in existing_entities:
+        _LOGGER.debug("Skipping duplicate entity setup: %s", entity_id)
+        return
+
+    sensors = [EmptyPredictionSensor(hass, config, entity_id)]
     async_add_entities(sensors, update_before_add=True)
 
 
@@ -45,7 +57,7 @@ class EmptyPredictionSensor(SensorEntity):
     should_poll = False
     device_class = SensorDeviceClass.TIMESTAMP
 
-    def __init__(self, hass: core.HomeAssistant, item: InventoryManagerItem) -> None:
+    def __init__(self, hass: core.HomeAssistant, item: InventoryManagerItem, entity_id) -> None:
         """Construct a new EmptyPredictionSensor."""
         _LOGGER.debug("Initializing ConsumptionSensor for %s", item.name)
 
@@ -64,7 +76,7 @@ class EmptyPredictionSensor(SensorEntity):
         self.device_info = item.device_info
         self.unique_id = entity_config[UNIQUE_ID]
         self.extra_state_attributes = {}
-        self.entity_id = entity_config[ENTITY_ID]
+        self.entity_id = entity_id
         self.native_value: datetime = now() + timedelta(days=10000)
 
         self.device_class = SensorDeviceClass.TIMESTAMP
