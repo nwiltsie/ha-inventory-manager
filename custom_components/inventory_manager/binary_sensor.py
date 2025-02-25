@@ -29,7 +29,19 @@ async def async_setup_entry(
     """Set up sensors from a config entry created in the integrations UI."""
     _LOGGER.debug("binary_sensor.async_setup_entry %s", config_entry.data)
     config = hass.data[DOMAIN][config_entry.entry_id]
-    sensors = [WarnSensor(hass, config)]
+
+    entity_id = config_entry.entity_config[InventoryManagerEntityType.WARNING][
+        ENTITY_ID
+    ]
+
+    # Prevent duplicates by checking existing entities
+    existing_entities = [entity.entity_id for entity in hass.states.async_all()]
+
+    if entity_id in existing_entities:
+        _LOGGER.debug("Skipping duplicate entity setup: %s", entity_id)
+        return
+
+    sensors = [WarnSensor(hass, config, entity_id)]
     async_add_entities(sensors, update_before_add=True)
 
 
@@ -38,7 +50,7 @@ class WarnSensor(BinarySensorEntity):
 
     _attr_has_entity_name = True
 
-    def __init__(self, hass: core.HomeAssistant, item: InventoryManagerItem):
+    def __init__(self, hass: core.HomeAssistant, item: InventoryManagerItem, entity_id):
         """Create a new object."""
         super().__init__()
         _LOGGER.debug("Initializing WarnSensor for %s", item.name)
@@ -60,9 +72,7 @@ class WarnSensor(BinarySensorEntity):
         self.translation_key = STRING_PROBLEM_ENTITY
         self.available = False
         self.is_on = False
-        self.entity_id = item.entity_config[InventoryManagerEntityType.WARNING][
-            ENTITY_ID
-        ]
+        self.entity_id = entity_id
         _LOGGER.debug("WarnSensor - %s has ID `%s` `%s`", item.name, self.unique_id, self.entity_id)
 
     def update(self):

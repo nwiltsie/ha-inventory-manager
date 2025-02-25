@@ -47,11 +47,11 @@ class EmptyPredictionSensor(SensorEntity):
 
     def __init__(self, hass: core.HomeAssistant, item: InventoryManagerItem) -> None:
         """Construct a new EmptyPredictionSensor."""
-        _LOGGER.debug("Initializing ConsumptionSensor")
+        _LOGGER.debug("Initializing ConsumptionSensor for %s", item.name)
 
         self.hass = hass
         self.item = item
-        self.platform = entity_platform.async_get_current_platform()
+        # self.platform = entity_platform.async_get_current_platform()
 
         self.item.entity[InventoryManagerEntityType.EMPTYPREDICTION] = self
 
@@ -59,8 +59,8 @@ class EmptyPredictionSensor(SensorEntity):
             InventoryManagerEntityType.EMPTYPREDICTION
         ]
 
-        self._device_id = item.device_id
-        self._available = True
+        # self._device_id = item.device_id
+        # self._available = True
         self.device_info = item.device_info
         self.unique_id = entity_config[UNIQUE_ID]
         self.extra_state_attributes = {}
@@ -72,7 +72,7 @@ class EmptyPredictionSensor(SensorEntity):
 
     def update(self):
         """Recalculate the remaining time until supply is empty."""
-        _LOGGER.debug("Updating sensor")
+        _LOGGER.debug("Updating EPS for %s", self.item.name)
 
         self.extra_state_attributes[ATTR_DAYS_REMAINING] = self.item.days_remaining()
         self.native_value = now() + timedelta(days=self.item.days_remaining())

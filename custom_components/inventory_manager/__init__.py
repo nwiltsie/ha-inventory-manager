@@ -52,8 +52,10 @@ async def async_setup_entry(
 
     dr = device_registry.async_get(hass)
     friendly_name = entry.data[CONF_ITEM_NAME]
+    _LOGGER.debug("The friendly name is %s", friendly_name)
     if CONF_ITEM_SIZE in entry.data:
         friendly_name = friendly_name + SPACE + entry.data[CONF_ITEM_SIZE]
+        _LOGGER.debug("Actually, the friendly name is %s", friendly_name)
     dr.async_get_or_create(
         config_entry_id=entry.entry_id,
         entry_type=item.device_info["entry_type"],
