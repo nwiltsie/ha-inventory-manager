@@ -30,7 +30,7 @@ async def async_setup_entry(
     _LOGGER.debug("binary_sensor.async_setup_entry %s", config_entry.data)
     config = hass.data[DOMAIN][config_entry.entry_id]
 
-    entity_id = config_entry.entity_config[InventoryManagerEntityType.WARNING][
+    entity_id = config.entity_config[InventoryManagerEntityType.WARNING][
         ENTITY_ID
     ]
 
